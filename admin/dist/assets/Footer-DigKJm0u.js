@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{b as t,c as r,d as c}from"./index-BIJFk_Lq.js";const n={};function a(s,_){const o=t("a-layout-footer");return r(),c(o,{style:{"text-align":"center"}})}const m=e(n,[["render",a]]);export{m as F};

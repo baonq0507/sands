@@ -1,0 +1,1 @@
+import{t as _,v as r,y as e}from"./index-CwvAlKn0.js";const a=(t,o)=>{const n=t.__vccOpts||t;for(const[s,c]of o)n[s]=c;return n},d={},l={class:"page_not_found"},h=e("h1",null,"404",-1),i=e("p",null,"Không tìm thấy trang",-1),f=e("a",{href:"/"},"Quay lại",-1),u=[h,i,f];function p(t,o){return _(),r("div",l,u)}const g=a(d,[["render",p]]);export{g as default};
