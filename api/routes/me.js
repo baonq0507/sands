@@ -167,7 +167,7 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
     }
 
     if (!password2) {
-        return res.status(400).send({ message: "Vui lòng nhập mật khẩu cấp 2" });
+        return res.status(400).send({ message: "Vui lòng nhập mật khẩu rút tiền" });
     }
     let token = req.session.token;
 
@@ -189,7 +189,7 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
 
         if (userFind) {
             if (userFind.password2 !== md5(password2)) {
-                return res.status(422).send({ message: "Mật khẩu cấp 2 không đúng" });
+                return res.status(422).send({ message: "Mật khẩu rút tiền không đúng" });
             }
             const newRequestMoney = new requestMoney({
                 userID: userFind._id,

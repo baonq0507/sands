@@ -114,7 +114,7 @@ io.on('connection', (socket) => {
 
 
   socket.on('update-balance', (data) => {
-    io.emit(`update-balance-${data.userId}`, { balance: data.balance });
+    io.emit(`update-balance-${data.userId}`, { balance: data.balance, note: data.note });
   })
   socket.on('update-setting', (data) => {
     console.log(data, 'data');

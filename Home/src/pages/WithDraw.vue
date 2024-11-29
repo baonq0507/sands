@@ -24,6 +24,10 @@ onMounted(() => {
     // console.log(user)
     axios.get('/me/profile').then((res) => {
         user.value = res.user;
+
+        if (!user.value.bankAccountNumber && !user.value.bankAccountName && !user.value.bankAccountBranch) {
+            router.push('/link-bank');
+        }
     }).catch((err) => {
         console.log(err);
         router.push('/login');
@@ -57,7 +61,7 @@ const onFinish = values => {
             user.value = res.user;
         }
     }).catch((err) => {
-        layer.msg('Rút tiền thất bại', {
+        layer.msg(err.response.data.message, {
             icon: 2,
             time: 2000
         });

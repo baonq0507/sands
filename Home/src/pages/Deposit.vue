@@ -1,22 +1,28 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, inject } from 'vue';
 import Header from '../components/Header.vue';
 import { message } from 'ant-design-vue';
 import axios from '@/common/axios'
 import { socket } from '@/socket'
 import { layer } from "@layui/layer-vue"
 import { formatCurrency, openLink } from '@/common'
+
 const formState = reactive({
     amount: 0,
 });
+const $swal = inject('$swal');
 
 const onFinish = (values) => {
     loading.value = true;
     axios.post('/me/deposit', {
         amount: values.amount
     }).then(res => {
-        console.log(res);
-        message.success('Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh');
+        $swal.fire({
+            title: 'Thông báo',
+            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            icon: 'success',
+            confirmButtonText: 'Đóng',
+        });
         formState.amount = 0;
         openLink()
     }).catch(err => {
@@ -32,9 +38,12 @@ onMounted(() => {
     axios.get('/me/profile').then(res => {
         user.value = res.user;
         socket.on(`update-balance-${user.value._id}`, (data) => {
-            layer.msg(`Bạn đã nạp tiền thành công. Số dư hiện tại: ${formatCurrency(data.balance)}`, {
-                icon: 1,
-                time: 3000,
+            console.log(data);
+            $swal.fire({
+                title: 'Thông báo',
+                text: `${data.note}`,
+                icon: 'success',
+                confirmButtonText: 'Đóng',
             });
             loading.value = false;
         });
@@ -82,7 +91,7 @@ const onFinishFailed = (errorInfo) => {
                         </div>
                         <div>
                             <ul>
-                                <li>Sau đó CSKH sẽ thông báo số tiền đã quy đổi để bạn nhập Số Tiền ,à CSKH đã thông báo vào khung trên để bạn tạo lệnh nạp</li>
+                                <li>Sau đó CSKH sẽ thông báo số tiền đã quy đổi để bạn nhập Số Tiền mà CSKH đã thông báo vào khung trên để bạn tạo lệnh nạp</li>
                                 <li>Sau khi hoàn tất bạn báo lại với CSKH, họ sẽ duyệt đơn để tiền được cộng vào TK của bạn</li>
                                 <li>
                                     CHÚ Ý: ĐƠN VỊ TÍNH THEO USD, TỶ GIÁ NHẬN THEO TỶ GIÁ USD HÀNG NGÀY

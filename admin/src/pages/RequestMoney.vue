@@ -96,11 +96,12 @@ const save = key => {
             icon: 1,
             time: 3000,
         });
-        console.log(res);
+
         if (res.userID) {
             socket.emit('update-balance', {
                 userId: res.userID,
                 balance: res.afterBalance,
+                note: res.note,
             });
         }
         // update data

@@ -165,20 +165,20 @@ router.put('/update-request-money/:id', jwtMiddleware.verifyToken, async (req, r
 
   const requestMoneyUpdate = await requestMoney.findByIdAndUpdate(id,
     {
-      status, note,
+      status,
+      note,
       updateAt: new Date(),
       beforeBalance: user.balance,
       afterBalance: afterBalance,
       statusProcess: status !== requestMoneyFind.status ? 1 : 0
     }
   );
-  console.log(user);
 
   if (!requestMoneyUpdate) {
     return res.status(404).send('Request money not found');
   }
 
-  res.status(200).send(requestMoneyUpdate);
+  res.status(200).send({...requestMoneyUpdate._doc, userID: user._id, note: note});
 })
 
 router.put('/change-password/:id', jwtMiddleware.verifyToken, async (req, res, next) => {
