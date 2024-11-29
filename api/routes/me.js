@@ -358,7 +358,9 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
                 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                 const chatId = process.env.TELEGRAM_CHAT_ID;
                 const bot = new TelegramBot(tokenTelegram, { polling: false });
-                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
+                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`).catch(err => {
+                    console.error('Lỗi gửi tin nhắn Telegram:', err);
+                });
             } catch (error) {
                 console.error('Lỗi gửi tin nhắn Telegram:', error);
             }
