@@ -15,7 +15,7 @@ import iconLottery from '@/assets/images/icons/lottery.svg'
 import iconHistoryBet from '@/assets/images/icons/historyBet.png'
 import iconCSKH from '@/assets/images/icons/cskh.svg'
 import iconProfile from '@/assets/images/icons/profile.png'
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from '@/common/axios'
 import { layer } from "@layui/layer-vue"
@@ -28,7 +28,7 @@ import { listGame, userList } from '../common/constants'
 import Header from '../components/Header.vue'
 
 import {socket} from '@/socket'
-
+const $swal = inject('$swal');
 
 const store = useStore()
 const user = ref(getStorage('user'));
@@ -54,9 +54,11 @@ const slider = ref(getStorage('banner'));
 onMounted(() => {
     socket.on(`update-balance-${user.value._id}`, (data) => {
         formattedBalanceUser.value = formatCurrency(data.balance);
-        layer.msg(`Bạn đã nạp tiền thành công. Số dư hiện tại: ${formattedBalanceUser.value}`, {
-            icon: 1,
-            time: 3000,
+        $swal.fire({
+            title: 'Thông báo',
+            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            icon: 'success',
+            confirmButtonText: 'Đóng',
         });
     })
 
