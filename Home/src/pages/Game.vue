@@ -76,7 +76,7 @@ onMounted(() => {
         console.log(data);
         // user.value.balance = data.balance
         changeBalance(data.balance, '-')
-        layer.msg('Đặt cược thành công', {
+        layer.msg('Xác nhận thành công', {
             icon: 1,
             time: 1000,
         });
@@ -717,7 +717,7 @@ watch(() => visible.value, (value) => {
                             <a-button @click="resetBet" style="width: 100%">Xóa</a-button>
                         </a-col>
                         <a-col :span="12">
-                            <a-button type="primary" @click="onBet" style="width: 100%">Đặt cược</a-button>
+                            <a-button type="primary" @click="onBet" style="width: 100%">Xác nhận</a-button>
                         </a-col>
                     </a-row>
                 </a-col>

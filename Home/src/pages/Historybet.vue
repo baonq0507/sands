@@ -23,7 +23,6 @@ const cskh = computed(() => {
     return store.state.cskh;
 });
 
-
 const columns = [
     {
         title: 'Phiên',

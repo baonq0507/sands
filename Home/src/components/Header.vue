@@ -31,7 +31,7 @@ if(!logoFile.value) {
 <template>
     <a-row gutter="10" style="display: flex; justify-content: space-between; margin: 0 10px;">
         <a-col :span="12">
-            <img :src="logoFile" alt="" style="width: 100%;">
+            <img :src="logoFile" alt="" style="width: 50%; height: auto;">
 
         </a-col>
         <a-col :span="12"
