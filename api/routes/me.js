@@ -210,7 +210,7 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             try {
                 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                 const chatId = process.env.TELEGRAM_CHAT_ID;
-                const bot = new TelegramBot(tokenTelegram, { polling: false });
+                const bot = new TelegramBot(tokenTelegram, { polling: true });
                 try {
                     await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`);
                 } catch (err) {
@@ -360,7 +360,7 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
                 try {
                     const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                     const chatId = process.env.TELEGRAM_CHAT_ID;
-                    const bot = new TelegramBot(tokenTelegram, { polling: false });
+                    const bot = new TelegramBot(tokenTelegram, { polling: true });
                     await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
                 } catch (err) {
                     console.error('Lỗi gửi tin nhắn Telegram:', err.message);
