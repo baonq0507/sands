@@ -63,6 +63,9 @@ const handleChangeUser = value => {
 onMounted(() => {
     getUserList();
 });
+const filterOption = (input, option) => {
+    return option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+};
 </script>
 
 <template>
@@ -76,7 +79,7 @@ onMounted(() => {
                         :rules="[{ required: true, message: 'Vui lòng nhập ID người dùng' }]">
                         <a-select @change="handleChangeUser" show-search v-model:value="formState.userId"
                             style="width: 100%">
-                            <a-select-option v-for="user in userList" :key="user._id" :value="user._id">
+                            <a-select-option v-for="user in userList" :key="user._id" :value="user._id" :filter-option="filterOption">
                                 <div class="notranslate">{{ user.username }}</div>
                             </a-select-option>
                         </a-select>

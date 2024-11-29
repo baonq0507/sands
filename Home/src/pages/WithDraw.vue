@@ -118,8 +118,7 @@ const onFinishFailed = errorInfo => {
                         <a-form-item label="Số tiền rút" name="amount" :rules="[
                             { required: true, message: 'Vui lòng nhập số tiền' },
                         ]">
-                            <a-input-number style="width: 100%" @change="changeInput"
-                                v-model:value="formState.amount" />
+                            <a-input-number style="width: 100%" v-model:value="formState.amount" />
                         </a-form-item>
                         <a-form-item label="Ghi chú" name="reson">
                             <a-textarea v-model:value="formState.reson" />
