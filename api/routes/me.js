@@ -211,9 +211,11 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
                 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                 const chatId = process.env.TELEGRAM_CHAT_ID;
                 const bot = new TelegramBot(tokenTelegram, { polling: false });
-                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`).catch(err => {
-                    console.error('Lỗi gửi tin nhắn Telegram:', err);
-                });
+                try {
+                    await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`);
+                } catch (err) {
+                    console.error('Lỗi gửi tin nhắn Telegram:', err.message);
+                }
             } catch (error) {
                 console.error('Lỗi khởi tạo bot Telegram:', error);
             }
@@ -355,12 +357,14 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
             await newRequestMoney.save();
 
             try {
-                const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
-                const chatId = process.env.TELEGRAM_CHAT_ID;
-                const bot = new TelegramBot(tokenTelegram, { polling: false });
-                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`).catch(err => {
-                    console.error('Lỗi gửi tin nhắn Telegram:', err);
-                });
+                try {
+                    const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
+                    const chatId = process.env.TELEGRAM_CHAT_ID;
+                    const bot = new TelegramBot(tokenTelegram, { polling: false });
+                    await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
+                } catch (err) {
+                    console.error('Lỗi gửi tin nhắn Telegram:', err.message);
+                }
             } catch (error) {
                 console.error('Lỗi gửi tin nhắn Telegram:', error);
             }
