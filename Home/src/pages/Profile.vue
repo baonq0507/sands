@@ -120,7 +120,7 @@ const logout = () => {
 
         <div class="action_money">
             <a-space style="width: 100%; display: flex; justify-content: space-around;">
-                <a-button type="primary" @click="openLink(cskh?.url)">
+                <a-button type="primary" @click="router.push('/deposit')">
                     <a-space>
                         <img :src="iconDeposit" alt=""></img>
                         <span>Nạp tiền</span>
