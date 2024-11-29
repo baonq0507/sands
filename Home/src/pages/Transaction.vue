@@ -140,9 +140,13 @@ watch(user, (newVal) => {
                     </a-typography.Title>
 
                     <div style="color: #fff; display: block; height: 30px;font-size: 16px;">
-                        Trạng thái: {{ balance.status === 'pending' ? 'Đang chờ xử lý' : balance.status === 'accept' ?
-                        'Thành công'
-                        : 'Từ chối'}}
+                        Trạng thái: <a-tag :color="balance.status === 'pending' ? 'warning' : balance.status === 'accept' ?
+                            'success'
+                            : 'error'">
+                            {{ balance.status === 'pending' ? 'Đang chờ xử lý' : balance.status === 'accept' ?
+                                'Thành công'
+                                : 'Từ chối'}}
+                        </a-tag>
                     </div>
                     <div style="color: #fff; display: block; height: 30px;font-size: 16px;" v-if="balance.note">
                         Ghi chú: {{ balance.note }}
