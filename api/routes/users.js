@@ -310,7 +310,7 @@ router.put('/update-balance/:id', jwtMiddleware.verifyToken, async (req, res, ne
       afterBalance: afterBalance,
       statusProcess: 1,
     }
-    await requestMoney.create({...requestMoneyData, userID: id, note: note ?? `Bạn được cập nhật số dư ${formatCurrency(user.balance)} thành ${formatCurrency(parseFloat(balance))} vào lúc ${formatDate}`});
+    await requestMoney.create({ ...requestMoneyData, userID: id, note: note ?? `Bạn được cập nhật số dư ${formatCurrency(user.balance)} thành ${formatCurrency(parseFloat(balance))} vào lúc ${formatDate}`, balance: afterBalance });
   }
 
   user.balance = afterBalance
