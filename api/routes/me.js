@@ -8,7 +8,8 @@ const historyBet = require('../models/games/historyBet');
 const requestMoney = require('../models/requestMoney');
 const transaction = require('../models/transaction');
 const md5 = require('md5');
-
+const TelegramBot = require('node-telegram-bot-api');
+const { formatNumber } = require('../common');
 const jwtMiddleware = require('../middleware/jwtMiddleware');
 
 /* GET users listing. */
@@ -205,6 +206,11 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             userFind.balance -= amount;
             await userFind.save();
 
+            const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
+            const chatId = process.env.TELEGRAM_CHAT_ID;
+            const bot = new TelegramBot(tokenTelegram, { polling: false });
+            bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`);
+
             res.status(200).send({ message: "Yêu cầu rút tiền thành công", user: userFind });
         } else {
             res.status(404).send({ message: "Tài khoản không tồn tại" });
@@ -320,6 +326,10 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
         return res.status(401).send({ message: "Đăng nhập hết hạn, Vui lòng đăng nhập lại!" });
     }
 
+    const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    const bot = new TelegramBot(tokenTelegram, { polling: false });
+
     jwt.verify(token, config.secret, async (err, decoded) => {
         if (err) {
             return res.status(401).send({
@@ -339,6 +349,7 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
             });
             await newRequestMoney.save();
 
+            bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
             res.status(200).send({ message: "Yêu cầu nạp tiền thành công", user: userFind });
         } else {
             res.status(404).send({ message: "Tài khoản không tồn tại" });

@@ -112,8 +112,8 @@ const save = key => {
                     ...item,
                     ...editableData[key],
                     username: data.username,
-                    status: item.status == 'pending' ? 'Đang chờ' : item.status == 'accept' ? 'Đã chấp nhận' : 'Từ chối',
-                    type: item.type == 'deposit' ? 'Nạp tiền' : 'Rút tiền',
+                    // status: item.status == 'pending' ? 'Đang chờ' : item.status == 'accept' ? 'Đã chấp nhận' : 'Từ chối',
+                    // type: item.type == 'deposit' ? 'Nạp tiền' : 'Rút tiền',
                 }
             }
             return item;
@@ -165,8 +165,8 @@ const run = (params) => {
                 ...item,
                 key: item._id,
                 username: item?.user ? item.user.username : '',
-                status: item.status == 'pending' ? 'Đang chờ' : item.status == 'accept' ? 'Đã chấp nhận' : 'Từ chối',
-                type: item.type == 'deposit' ? 'Nạp tiền' : 'Rút tiền',
+                // status: item.status == 'pending' ? 'Đang chờ' : item.status == 'accept' ? 'Đã chấp nhận' : 'Từ chối',
+                // type: item.type == 'deposit' ? 'Nạp tiền' : 'Rút tiền',
             }
         });
         pagination.value = {
@@ -270,20 +270,21 @@ const changeRangePicker = (value) => {
                                     <a-select-option value="reject">Từ chối</a-select-option>
                                 </a-select>
                                 <template v-else>
-                                    {{ text }}
+                                    <a-tag :color="text === 'pending' ? 'warning' : text === 'accept' ?
+                                        'success'
+                                        : 'error'">
+                                        {{ text === 'pending' ? 'Đang chờ' : text === 'accept' ?
+                                            'Chấp nhận'
+                                            : 'Từ chối'}}
+                                    </a-tag>
                                 </template>
                             </div>
                         </template>
-                        <template v-if="['role'].includes(column.dataIndex)">
+                        <template v-if="['type'].includes(column.dataIndex)">
                             <div>
-                                <a-select v-if="editableData[record.key]"
-                                    v-model:value="editableData[record.key][column.dataIndex]" style="margin: -5px 0">
-                                    <a-select-option value="admin">Admin</a-select-option>
-                                    <a-select-option value="user">Người dùng</a-select-option>
-                                </a-select>
-                                <template v-else>
-                                    {{ text }}
-                                </template>
+                                <a-tag :color="text === 'deposit' ? 'success' : 'error'">
+                                    {{ text === 'deposit' ? 'Nạp tiền' : 'Rút tiền'}}
+                                </a-tag>
                             </div>
                         </template>
                         <template v-if="['note'].includes(column.dataIndex)">
