@@ -11,7 +11,7 @@ import iconGame8 from '@/assets/images/icons/games/8.png'
 
 export const listGame = [
     {
-        name: "Xem xổ số 5 điểm",
+        name: "Keno 5 phút",
         code: "sx5d",
         type: "DICE 1",
         image: iconGame1
