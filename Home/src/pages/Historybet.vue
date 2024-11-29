@@ -10,7 +10,7 @@ import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash-es';
 import { useStore } from 'vuex';
 import { socket } from '@/socket'
-import { getStaticFile, formatCurrency } from '@/common'
+import { getStaticFile } from '@/common'
 import { socket } from '@/socket'
 
 
