@@ -11,7 +11,6 @@ import { cloneDeep } from 'lodash-es';
 import { useStore } from 'vuex';
 import { socket } from '@/socket'
 import { getStaticFile } from '@/common'
-import { socket } from '@/socket'
 
 
 const user = ref(getStorage('user'))
