@@ -123,7 +123,7 @@ onMounted(() => {
         formattedBalanceUser.value = formatCurrency(user.value.balance);
         $swal.fire({
             title: 'Thông báo',
-            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            text: `${data.note}`,
             icon: 'success',
             confirmButtonText: 'Đóng',
         });

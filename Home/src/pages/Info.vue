@@ -1,7 +1,7 @@
 <script setup>
 import { getStorage } from '@/common'
 import { onMounted, watch, computed, inject } from 'vue'
-import { formatCurrency, formatDateTime, openLink } from '../common';
+import { formatCurrency, formatDateTime, openLink, getStaticFile } from '../common';
 import iconDeposit from '@/assets/images/icons/profile/deposit.svg'
 import { CaretRightOutlined, HomeOutlined, UploadOutlined } from '@ant-design/icons-vue';
 import { ref } from 'vue';
@@ -10,8 +10,6 @@ import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash-es';
 import { layer } from '@layui/layer-vue';
 import { useStore } from 'vuex';
-import { socket } from '@/socket'
-import { getStaticFile, formatCurrency } from '@/common'
 
 const user = ref(getStorage('user'))
 const staticUrl = import.meta.env.VITE_APP_STATIC_URL ?? 'http://localhost:3000'
@@ -41,7 +39,7 @@ onMounted(() => {
         formattedBalanceUser.value = formatCurrency(data.balance);
         $swal.fire({
             title: 'Thông báo',
-            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            text: `${data.note}`,
             icon: 'success',
             confirmButtonText: 'Đóng',
         });
