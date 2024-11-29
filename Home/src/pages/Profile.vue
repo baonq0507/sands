@@ -1,6 +1,6 @@
 <script setup>
 import { getStorage } from '@/common'
-import { onMounted, watch, computed } from 'vue'
+import { onMounted, watch, computed, inject } from 'vue'
 
 import iconDeposit from '@/assets/images/icons/profile/deposit.svg'
 import { CaretRightOutlined, HomeOutlined, LogoutOutlined } from '@ant-design/icons-vue';
@@ -16,6 +16,8 @@ import iconHistoryBet from '@/assets/images/icons/historyBet.png'
 import iconCSKH from '@/assets/images/icons/cskh.svg'
 import iconProfile from '@/assets/images/icons/profile.png'
 import { formatCurrency, getStaticFile, openLink } from '@/common'
+
+const $swal = inject('$swal');
 const user = ref(getStorage('user'))
 const router = useRouter();
 const staticUrl = import.meta.env.VITE_APP_STATIC_URL ?? 'http://localhost:3000'
@@ -34,6 +36,12 @@ const cskh = computed(() => {
 onMounted(() => {
     socket.on(`update-balance-${user.value._id}`, (data) => {
         formattedBalanceUser.value = formatCurrency(data.balance);
+        $swal.fire({
+            title: 'Thông báo',
+            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            icon: 'success',
+            confirmButtonText: 'Đóng',
+        });
     })
     // console.log(user)
     axios.get('/me/profile').then((res) => {

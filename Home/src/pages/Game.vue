@@ -2,7 +2,7 @@
 import { HomeOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 import { getStorage, formatCurrency } from '../common';
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, inject } from 'vue';
 import { ReloadOutlined, ArrowDownOutlined } from '@ant-design/icons-vue';
 import iconCoin10k from '@/assets/images/icons/games/coin/10k.png'
 import iconCoin100k from '@/assets/images/icons/games/coin/100k.png'
@@ -17,7 +17,7 @@ const betDataOnServer = ref(null)
 const user = ref(getStorage('user'))
 const formattedBalanceUser = ref(formatCurrency(user.value.balance))
 const router = useRouter()
-
+const $swal = inject('$swal');
 const codeInParam = router.currentRoute.value.params.code
 const setting = ref({
     value: '1.98'
@@ -28,6 +28,15 @@ onMounted(() => {
         user.value = res.user;
         axios.get(`/setting/user/${user.value._id}`).then((res) => {
             setting.value = res;
+            socket.on(`update-balance-${user.value._id}`, (data) => {
+                formattedBalanceUser.value = formatCurrency(data.balance)
+                $swal.fire({
+                    title: 'Thông báo',
+                    text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+                    icon: 'success',
+                    confirmButtonText: 'Đóng',
+                });
+            })
         });
     }).catch((err) => {
         console.log(err);

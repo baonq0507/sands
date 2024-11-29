@@ -1,13 +1,16 @@
 <script setup>
 import { HomeOutlined, SearchOutlined } from '@ant-design/icons-vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import axios from '../common/axios.js';
 import { getStorage } from '../common';
 import { layer } from '@layui/layer-vue';
 import { useRouter } from 'vue-router';
+import { socket } from '@/socket'
+import { formatCurrency } from '@/common'
 const router = useRouter();
 const activeKey = ref('overview');
 const activeKeyNewAcc = ref('1');
+const $swal = inject('$swal');
 
 const openTab = (key) => {
     if (key === 'report') {
@@ -39,6 +42,15 @@ const user = ref(getStorage('user'));
 onMounted(() => {
     axios.get('/me/profile').then((res) => {
         user.value = res.user;
+        socket.on(`update-balance-${user.value._id}`, (data) => {
+            formattedBalanceUser.value = formatCurrency(data.balance);
+            $swal.fire({
+                title: 'Thông báo',
+                text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+                icon: 'success',
+                confirmButtonText: 'Đóng',
+            });
+        })
     }).catch((err) => {
         console.log(err);
         router.push('/login');

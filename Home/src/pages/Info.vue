@@ -1,6 +1,6 @@
 <script setup>
 import { getStorage } from '@/common'
-import { onMounted, watch, computed } from 'vue'
+import { onMounted, watch, computed, inject } from 'vue'
 import { formatCurrency, formatDateTime, openLink } from '../common';
 import iconDeposit from '@/assets/images/icons/profile/deposit.svg'
 import { CaretRightOutlined, HomeOutlined, UploadOutlined } from '@ant-design/icons-vue';
@@ -11,7 +11,7 @@ import { cloneDeep } from 'lodash-es';
 import { layer } from '@layui/layer-vue';
 import { useStore } from 'vuex';
 import { socket } from '@/socket'
-import { getStaticFile } from '@/common'
+import { getStaticFile, formatCurrency } from '@/common'
 
 const user = ref(getStorage('user'))
 const staticUrl = import.meta.env.VITE_APP_STATIC_URL ?? 'http://localhost:3000'
@@ -19,6 +19,7 @@ const formattedBalanceUser = ref(formatCurrency(user.balance))
 const formattedBetTodayUser = ref(formatCurrency(user.betToday))
 const router = useRouter();
 const dataSource = ref([]);
+const $swal = inject('$swal');
 const text = `A dog is a type of domesticated animal.Known for its loyalty and faithfulness,it can be found as a welcome guest in many households across the world.`;
 const activeKey = ref([]);
 const formState = ref({
@@ -38,6 +39,12 @@ const actionUrl = `${import.meta.env.VITE_API_URL}/upload`;
 onMounted(() => {
     socket.on(`update-balance-${user.value._id}`, (data) => {
         formattedBalanceUser.value = formatCurrency(data.balance);
+        $swal.fire({
+            title: 'Thông báo',
+            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            icon: 'success',
+            confirmButtonText: 'Đóng',
+        });
     });
     axios.get('/me/profile').then((res) => {
         user.value = res.user;

@@ -1,6 +1,6 @@
 <script setup>
 import { getStorage } from '@/common'
-import { onMounted, watch, computed } from 'vue'
+import { onMounted, watch, computed, inject } from 'vue'
 import { formatCurrency, formatDateTime, openLink } from '../common';
 import iconDeposit from '@/assets/images/icons/profile/deposit.svg'
 import { CaretRightOutlined, HomeOutlined } from '@ant-design/icons-vue';
@@ -10,7 +10,9 @@ import { useRouter } from 'vue-router';
 import { cloneDeep } from 'lodash-es';
 import { useStore } from 'vuex';
 import { socket } from '@/socket'
-import { getStaticFile } from '@/common'
+import { getStaticFile, formatCurrency } from '@/common'
+import { socket } from '@/socket'
+
 
 const user = ref(getStorage('user'))
 const staticUrl = import.meta.env.VITE_APP_STATIC_URL ?? 'http://localhost:3000'
@@ -19,6 +21,7 @@ const formattedBetTodayUser = ref(formatCurrency(user.betToday))
 const router = useRouter();
 const dataSource = ref([]);
 const store = useStore();
+const $swal = inject('$swal');
 const cskh = computed(() => {
     return store.state.cskh;
 });
@@ -117,6 +120,13 @@ onMounted(() => {
     })
     axios.get('/me/profile').then((res) => {
         user.value = res.user;
+        formattedBalanceUser.value = formatCurrency(user.value.balance);
+        $swal.fire({
+            title: 'Thông báo',
+            text: `Yêu cầu nạp tiền thành công. Vui lòng đợi duyệt lệnh`,
+            icon: 'success',
+            confirmButtonText: 'Đóng',
+        });
     }).catch((err) => {
         console.log(err);
         router.push('/login');
