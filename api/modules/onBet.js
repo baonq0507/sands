@@ -1,7 +1,9 @@
+require('dotenv').config();
 const historyBet = require('../models/games/historyBet');
 const users = require('../models/users');
 const Sx5d = require('../models/games/Sx5d');
 const settings = require('../models/settings');
+const telegramAPI = require('node-telegram-bot-api');
 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 const bot = new telegramAPI(tokenTelegram, {
