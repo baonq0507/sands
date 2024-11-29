@@ -47,6 +47,7 @@ const onFinish = (values) => {
             socket.emit('update-balance', {
                 userId: data.userId,
                 balance: res.balance,
+                note: data.note,
             });
         }
     }).catch((err) => {
