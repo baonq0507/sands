@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 const jwt = require('jsonwebtoken');
@@ -206,10 +207,16 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             userFind.balance -= amount;
             await userFind.save();
 
-            const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
-            const chatId = process.env.TELEGRAM_CHAT_ID;
-            const bot = new TelegramBot(tokenTelegram, { polling: false });
-            bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`);
+            try {
+                const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
+                const chatId = process.env.TELEGRAM_CHAT_ID;
+                const bot = new TelegramBot(tokenTelegram, { polling: false });
+                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`).catch(err => {
+                    console.error('Lỗi gửi tin nhắn Telegram:', err);
+                });
+            } catch (error) {
+                console.error('Lỗi khởi tạo bot Telegram:', error);
+            }
 
             res.status(200).send({ message: "Yêu cầu rút tiền thành công", user: userFind });
         } else {
@@ -349,7 +356,11 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
             });
             await newRequestMoney.save();
 
-            bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
+            try {
+                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
+            } catch (error) {
+                console.error('Lỗi gửi tin nhắn Telegram:', error);
+            }
             res.status(200).send({ message: "Yêu cầu nạp tiền thành công", user: userFind });
         } else {
             res.status(404).send({ message: "Tài khoản không tồn tại" });
