@@ -64,10 +64,8 @@ onMounted(() => {
     getUserList();
 });
 const filterOption = (input, option) => {
-    return (
-        option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-        option.title.toLowerCase().indexOf(input.toLowerCase()) >= 0
-    );
+    console.log(option);
+    return option.key.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
 </script>
 
