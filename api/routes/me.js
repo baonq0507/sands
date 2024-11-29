@@ -210,9 +210,8 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             try {
                 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                 const chatId = process.env.TELEGRAM_CHAT_ID;
-                fetch(`https://api.telegram.org/bot${tokenTelegram}/sendMessage?chat_id=${chatId}&text=Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`).then(res => {
-                    console.log('res', res);
-                }).catch(err => {
+                const bot = new TelegramBot(tokenTelegram, { polling: false });
+                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`).catch(err => {
                     console.error('Lỗi gửi tin nhắn Telegram:', err);
                 });
             } catch (error) {
@@ -334,6 +333,8 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
         return res.status(401).send({ message: "Đăng nhập hết hạn, Vui lòng đăng nhập lại!" });
     }
 
+
+
     jwt.verify(token, config.secret, async (err, decoded) => {
         if (err) {
             return res.status(401).send({
@@ -356,12 +357,8 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
             try {
                 const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
                 const chatId = process.env.TELEGRAM_CHAT_ID;
-                // await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
-                fetch(`https://api.telegram.org/bot${tokenTelegram}/sendMessage?chat_id=${chatId}&text=Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`).then(res => {
-                    console.log('res', res);
-                }).catch(err => {
-                    console.error('Lỗi gửi tin nhắn Telegram:', err);
-                });
+                const bot = new TelegramBot(tokenTelegram, { polling: false });
+                await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
             } catch (error) {
                 console.error('Lỗi gửi tin nhắn Telegram:', error);
             }
