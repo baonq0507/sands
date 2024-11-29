@@ -41,7 +41,6 @@ const changeInput = (e) => {
     formState.amount = e.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 const onFinish = values => {
-    values.amount = Number(values.amount.replace(/\D/g, ""));
     values.type = 'withdraw';
 
     if (values.amount > user.value.balance) {
