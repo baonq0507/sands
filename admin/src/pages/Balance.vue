@@ -43,10 +43,12 @@ const onFinish = (values) => {
         });
         userSelect.value = res
 
-        socket.emit('update-balance', {
-            userId: data.userId,
-            balance: res.balance,
-        });
+        if(data.type === 'add') {
+            socket.emit('update-balance', {
+                userId: data.userId,
+                balance: res.balance,
+            });
+        }
     }).catch((err) => {
         layer.msg('Cập nhật thất bại', {
             icon: 2,
