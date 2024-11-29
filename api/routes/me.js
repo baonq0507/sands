@@ -9,10 +9,19 @@ const historyBet = require('../models/games/historyBet');
 const requestMoney = require('../models/requestMoney');
 const transaction = require('../models/transaction');
 const md5 = require('md5');
-const TelegramBot = require('node-telegram-bot-api');
+const telegramAPI = require('node-telegram-bot-api');
 const { formatNumber } = require('../common');
 const jwtMiddleware = require('../middleware/jwtMiddleware');
-
+const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
+const chatId = process.env.TELEGRAM_CHAT_ID;
+const bot = new telegramAPI(tokenTelegram, {
+    polling: true, request: {
+        agentOptions: {
+            keepAlive: true,
+            family: 4
+        }
+    }
+});
 /* GET users listing. */
 router.get('/profile', jwtMiddleware.verifyToken, function (req, res, next) {
     let token = req.session.token;
@@ -208,9 +217,7 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             await userFind.save();
 
             try {
-                const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
-                const chatId = process.env.TELEGRAM_CHAT_ID;
-                const bot = new TelegramBot(tokenTelegram, { polling: true });
+
                 try {
                     await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu rút tiền ${formatNumber(amount)}`);
                 } catch (err) {
@@ -358,9 +365,6 @@ router.post('/deposit', jwtMiddleware.verifyToken, async (req, res, next) => {
 
             try {
                 try {
-                    const tokenTelegram = process.env.TELEGRAM_BOT_TOKEN;
-                    const chatId = process.env.TELEGRAM_CHAT_ID;
-                    const bot = new TelegramBot(tokenTelegram, { polling: true });
                     await bot.sendMessage(chatId, `Người dùng ${userFind.username} vừa yêu cầu nạp tiền ${formatNumber(amount)}`);
                 } catch (err) {
                     console.error('Lỗi gửi tin nhắn Telegram:', err.message);
