@@ -24,7 +24,6 @@ const onFinish = (values) => {
             confirmButtonText: 'Đóng',
         });
         formState.amount = 0;
-        openLink()
     }).catch(err => {
         console.log(err);
         message.error('Yêu cầu nạp tiền thất bại');
