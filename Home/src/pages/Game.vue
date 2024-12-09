@@ -776,6 +776,12 @@ watch(() => visible.value, (value) => {
 </template>
 
 <style>
+.onbet {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
 #game {
     background-color: #0C192C;
     min-height: 100vh;
