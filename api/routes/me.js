@@ -202,6 +202,9 @@ router.post('/withdraw', jwtMiddleware.verifyToken, async (req, res, next) => {
             if (userFind.password2 !== md5(password2)) {
                 return res.status(422).send({ message: "Mật khẩu rút tiền không đúng" });
             }
+            if (amount > userFind.balance) {
+                return res.status(422).send({ message: "Số dư không đủ" });
+            }
             const newRequestMoney = new requestMoney({
                 userID: userFind._id,
                 amount: amount,

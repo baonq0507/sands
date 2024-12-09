@@ -129,14 +129,14 @@ const betInUser = ref([])
 // })
 watch(() => betDataOnServer.value, (value) => {
     if (value) {
-        if (value.timeRemain === '00:00:00') {
+        if (value.timeRemain === '00:00:05') {
             showResult(true)
             setTimeout(() => {
                 showResult(false)
                 betData.value = value.betData
                 betInUser.value = []
                 amount.value = ''
-            }, 6000)
+            }, 5000)
         }
     }
 })

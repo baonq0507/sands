@@ -186,92 +186,89 @@ const getGame = async (type = 'sx5d') => {
     } else {
       // clear interval
       clearInterval(a);
-      setTimeout(async () => {
-        const historyBetResult = await historyBet.find({ betDataID: sessionToClient._id });
-        const resultBet = sessionToClient?.betData;
+      const historyBetResult = await historyBet.find({ betDataID: sessionToClient._id });
+      const resultBet = sessionToClient?.betData;
 
-        if (historyBetResult.length > 0) {
-          for (const item of historyBetResult) {
-            const betDataInUser = item.betInUser;
-            if (betDataInUser.length > 0) {
-              const settingsData = await settings.findOne({ name: 'game', userId: item.userID });
-              const winnings = checkWin(resultBet, betDataInUser, settingsData.value, type);
+      if (historyBetResult.length > 0) {
+        for (const item of historyBetResult) {
+          const betDataInUser = item.betInUser;
+          if (betDataInUser.length > 0) {
+            const settingsData = await settings.findOne({ name: 'game', userId: item.userID });
+            const winnings = checkWin(resultBet, betDataInUser, settingsData.value, type);
 
-              if (winnings.length > 0) {
-                // check winner and send prize is special
+            if (winnings.length > 0) {
+              // check winner and send prize is special
 
-                const special = winnings.filter(item => item.prize === 'Special');
-                const Thua = winnings.filter(item => item.prize === 'Thua');
+              const special = winnings.filter(item => item.prize === 'Special');
+              const Thua = winnings.filter(item => item.prize === 'Thua');
 
-                if (special.length > 0) {
-                  const user = await users.findOne({ _id: item.userID });
-                  // let amountAItem = item.amount / item.betInUser.length;
-                  const balanceInUser = user.balance;
-                  // let totalPrize = special.length * amountAItem * 1.98;
-                  // totalPrize sẽ được tính theo tỉ lệ 5% của tổng số tiền cược và trả lại số tiền cược
-                  let totalPrize = item.amount * 0.05 + item.amount;
-                  user.balance += totalPrize;
-                  await user.save();
-                  const historyFind = await historyBet.findOne({ _id: item._id });
-                  historyFind.win = item.amount * 0.05
-                  console.log(totalPrize - item.amount, 'totalPrize - item.amount');
-                  historyFind.interest = totalPrize - item.amount;
-                  historyFind.beforeOnWin = balanceInUser;
-                  historyFind.afterOnWin = user.balance + totalPrize;
-                  await historyFind.save();
-                  const userData = await users.findOne({ _id: item.userID });
-                  io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
-                } else if(Thua.length > 0) {
-                  const user = await users.findOne({ _id: item.userID });
+              if (special.length > 0) {
+                const user = await users.findOne({ _id: item.userID });
+                // let amountAItem = item.amount / item.betInUser.length;
+                const balanceInUser = user.balance;
+                // let totalPrize = special.length * amountAItem * 1.98;
+                // totalPrize sẽ được tính theo tỉ lệ 5% của tổng số tiền cược và trả lại số tiền cược
+                let totalPrize = item.amount * 0.05 + item.amount;
+                user.balance += totalPrize;
+                await user.save();
+                const historyFind = await historyBet.findOne({ _id: item._id });
+                historyFind.win = item.amount * 0.05
+                console.log(totalPrize - item.amount, 'totalPrize - item.amount');
+                historyFind.interest = totalPrize - item.amount;
+                historyFind.beforeOnWin = balanceInUser;
+                historyFind.afterOnWin = user.balance + totalPrize;
+                await historyFind.save();
+                const userData = await users.findOne({ _id: item.userID });
+                io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
+              } else if(Thua.length > 0) {
+                const user = await users.findOne({ _id: item.userID });
 
-                  const balanceInUser = user.balance;
-                  // let amountAItem = item.amount / item.betInUser.length;
-                  // let totalPrize = Thua.length * amountAItem * 1.98;
-                  // tính ra 5% tổng số tiền cược
-                  const totalPrize5 = item.amount * 0.01;
-                  // user.balance - 5% tổng số tiền cược
+                const balanceInUser = user.balance;
+                // let amountAItem = item.amount / item.betInUser.length;
+                // let totalPrize = Thua.length * amountAItem * 1.98;
+                // tính ra 5% tổng số tiền cược
+                const totalPrize5 = item.amount * 0.01;
+                // user.balance - 5% tổng số tiền cược
 
-                  const historyFind = await historyBet.findOne({ _id: item._id });
-                  user.balance += historyFind.amount
-                  user.balance -= totalPrize5;
-                  await user.save();
-                  historyFind.win = totalPrize5;
-                  console.log(totalPrize5 - item.amount);
-                  historyFind.interest = totalPrize5 - item.amount;
-                  historyFind.beforeOnWin = balanceInUser;
-                  historyFind.afterOnWin = user.balance + historyFind.amount - totalPrize5;
-                  await historyFind.save();
-                  const userData = await users.findOne({ _id: item.userID });
+                const historyFind = await historyBet.findOne({ _id: item._id });
+                user.balance += historyFind.amount
+                user.balance -= totalPrize5;
+                await user.save();
+                historyFind.win = totalPrize5;
+                console.log(totalPrize5 - item.amount);
+                historyFind.interest = totalPrize5 - item.amount;
+                historyFind.beforeOnWin = balanceInUser;
+                historyFind.afterOnWin = user.balance + historyFind.amount - totalPrize5;
+                await historyFind.save();
+                const userData = await users.findOne({ _id: item.userID });
 
-                  io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
-                } else {
-                  const user = await users.findOne({ _id: item.userID });
-
-                  const balanceInUser = user.balance;
-                  let amountAItem = item.amount / item.betInUser.length;
-                  let totalPrize = winnings.length * amountAItem * 1.98;
-
-                  user.balance += totalPrize;
-                  await user.save();
-                  const historyFind = await historyBet.findOne({ _id: item._id });
-                  historyFind.win = totalPrize;
-                  historyFind.interest = totalPrize - item.amount;
-                  historyFind.beforeOnWin = balanceInUser;
-                  historyFind.afterOnWin = user.balance + totalPrize;
-                  await historyFind.save();
-                  const userData = await users.findOne({ _id: item.userID });
-                  io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
-                }
+                io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
               } else {
                 const user = await users.findOne({ _id: item.userID });
-                io.emit(`lose-${item.userID}-${type}`, { userID: item.userID, prize: user.balance });
+
+                const balanceInUser = user.balance;
+                let amountAItem = item.amount / item.betInUser.length;
+                let totalPrize = winnings.length * amountAItem * 1.98;
+
+                user.balance += totalPrize;
+                await user.save();
+                const historyFind = await historyBet.findOne({ _id: item._id });
+                historyFind.win = totalPrize;
+                historyFind.interest = totalPrize - item.amount;
+                historyFind.beforeOnWin = balanceInUser;
+                historyFind.afterOnWin = user.balance + totalPrize;
+                await historyFind.save();
+                const userData = await users.findOne({ _id: item.userID });
+                io.emit(`win-${item.userID}-${type}`, { userID: item.userID, prize: userData.balance });
               }
+            } else {
+              const user = await users.findOne({ _id: item.userID });
+              io.emit(`lose-${item.userID}-${type}`, { userID: item.userID, prize: user.balance });
             }
           }
         }
-        createSession(type);
-      }, 5 * 1000);
-
+      }
+      createSession(type);
     }
   }, 1000);
 
