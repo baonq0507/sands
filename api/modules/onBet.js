@@ -55,7 +55,17 @@ const onBet = async (socket, data) => {
         // get balance user
         const userBalance = await users.findOne({ _id: userID });
         socket.emit(`betDataResponse-${userID}`, { status: 'success', balance: userBalance.balance });
-        bot.sendMessage(chatId, `Người chơi ${username} đặt cược thành công: ${amount} - ${updateData(betData.betData)}`);
+
+        bot.sendMessage(chatId, `
+🎮 <b>THÔNG BÁO ĐẶT CƯỢC</b>
+
+👤 Người chơi: ${username}
+🆔 ID: ${userID}
+🎲 Phiên: ${betData.id}
+💰 Số tiền: ${amount}
+
+📝 Chi tiết đặt cược:
+${updateData(betInUser)}`, { parse_mode: 'HTML' });
     }
     catch (error) {
         console.log(error);
@@ -71,16 +81,33 @@ const updateData = (data) => {
         4: "Chẵn"
     };
 
-    return data.map((item) => {
-        const idToMessage = ["số đầu tiên", "số thứ hai", "số thứ ba", "số thứ tư", "số thứ năm"];
-        // crate message for each betInUser
-        const messages = item.map((bet, index) => {
-            const idMessage = idToMessage[index] || `số thứ ${index + 1}`;
-            const valueMessage = valueToMessage[bet.value] || `value ${bet.value}`;
-            return `${idMessage}: ${valueMessage}`;
-        });
-
-        const finalMessage = messages.join("\n");
-        return finalMessage;
-    });
+    const messages = [];
+    const idToMessage = ["số đầu tiên", "số thứ hai", "số thứ ba", "số thứ tư", "số thứ năm", "Tổng"];
+    // crate message for each betInUser
+    //  { id: 0, value: 1 }, { id: 0, value: 2 }
+    console.log(data);
+    for (let i = 0; i < data.length; i++) {
+        const bet = data[i];
+        switch (bet.id) {
+            case 0:
+                messages.push(`${idToMessage[0]}: ${valueToMessage[bet.value]}`);
+                break;
+            case 1:
+                messages.push(`${idToMessage[1]}: ${valueToMessage[bet.value]}`);
+                break;
+            case 2:
+                messages.push(`${idToMessage[2]}: ${valueToMessage[bet.value]}`);
+                break;
+            case 3:
+                messages.push(`${idToMessage[3]}: ${valueToMessage[bet.value]}`);
+                break;
+            case 4:
+                messages.push(`${idToMessage[4]}: ${valueToMessage[bet.value]}`);
+                break;
+            case 5:
+                messages.push(`Tổng: ${valueToMessage[bet.value]}`);
+                break;
+        }
+    }
+    return messages.join("\n");
 };
